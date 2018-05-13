@@ -12,17 +12,42 @@
         <div class="hand hour-hand"></div>
         <div class="hand min-hand"></div>
         <div class="hand second-hand"></div>
+
+        <div class="markup mk-12"></div>
+        <div class="markup mk-3"></div>
+        <div class="markup mk-6"></div>
+        <div class="markup mk-9"></div>
       </div>
     </div>
 
 
   <style>
     html {
-      background:#018DED url(http://unsplash.it/1500/1000?image=881&blur=50);
-      background-size:cover;
       font-family:'helvetica neue';
       text-align: center;
       font-size: 10px;
+    }
+
+    body {
+      height: 90vh;
+      color: #fff;
+      background: linear-gradient(-45deg, #EE7752, #E73C7E, #23A6D5, #23D5AB);
+      background-size: 400% 400%;
+      -webkit-animation: Gradient 15s ease infinite;
+      -moz-animation: Gradient 15s ease infinite;
+      animation: Gradient 15s ease infinite;
+    }
+
+    @-webkit-keyframes Gradient {
+      0% {
+        background-position: 0% 50%
+      }
+      50% {
+        background-position: 100% 50%
+      }
+      100% {
+        background-position: 0% 50%
+      }
     }
 
     body {
@@ -32,6 +57,18 @@
       flex:1;
       min-height: 100vh;
       align-items: center;
+    }
+
+    .hour-hand{
+      height: 8px;
+    }
+
+    .min-hand{
+      height:6px;
+    }
+
+    .second-hand{
+      height: 4px;
     }
 
     .clock {
@@ -57,17 +94,91 @@
     }
 
     .hand {
-      width:50%;
-      height:6px;
       background:black;
       position: absolute;
       top:50%;
+      transform: rotate(90deg);
+      transform-origin: 100%;
+      width:50%;
+      transition: all 0.05s;
+      transition-timing-function: cubic-bezier(0, 3.27, 0.19, -0.25);
     }
+
+    .markup{
+      background:black;
+      position: absolute;
+      transform-origin: 100%;
+      width:5%;
+      height: 2px;
+    }
+
+    .mk-9{
+      top:50%;
+      left: 0%;
+    }
+
+    .mk-3{
+      top:50%;
+      right: 0%;
+    }
+
+    .mk-12{
+      transform: rotate(90deg);
+      left: 45%;
+      top: 5%;
+    }
+
+    .mk-6{
+      transform: rotate(90deg);
+      left: 45%;
+      bottom: 0%
+    }
+
 
   </style>
 
   <script>
+    const secondHand = document.querySelector('.second-hand');
+    const minHand = document.querySelector('.min-hand');
+    const hourHand = document.querySelector('.hour-hand');
 
+    function setDate(){
+      const now = new Date();
+      const seconds = now.getSeconds();
+      const minutes = now.getMinutes();
+      const hours = now.getHours();
+      
+      if(seconds === 59){
+        secondHand.style.transition = `none`;
+      }else{
+        secondHand.style.transition = `transition: all 0.05s`;
+      }
+
+      if(minutes === 59){
+        minHand.style.transition = `none`;
+      }else{
+        minHand.style.transition = `transition: all 0.05s`;
+      }
+
+      if(hours === 11){
+        hourHand.style.transition = `none`;
+      }else{
+        hourHand.style.transition = `transition: all 0.05s`;
+      }
+
+      //These Ifs are a counter measure to stop a weird glitch caused by the time/degree calculation result and the transition/transform position.
+       
+        
+      const secondsDegrees = ((seconds / 60) * 360) + 90;
+      const minutesDegrees = ((minutes / 60) * 360) + 90;
+      const hoursDegrees = ((hours / 12) * 360) + 90;
+
+      secondHand.style.transform = `rotate(${secondsDegrees}deg)`;
+      minHand.style.transform = `rotate(${minutesDegrees}deg)`;
+      hourHand.style.transform = `rotate(${hoursDegrees}deg)`;
+    }
+
+    setInterval(setDate, 1000);
 
   </script>
 </body>
